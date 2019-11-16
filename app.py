@@ -2,7 +2,6 @@ from flask import Flask, request
 import requests
 import motion_detector as md
 import com
-from telegram.ext import Updater, CommandHandler
 import _thread
 import config
 import telebot
