@@ -1,25 +1,17 @@
 import requests
 import json
-import telebot
-import numpy as np
+import config
+import time
 import cv2
 
-import time
-
-login = "./data.json"
+login = config.loginPath
 loginDataJson = {}
-
-photos = "./imgs/"
-url = "http://192.168.178.25:8000/stream.mjpg"
-
-def checkCam():
-    cap = cv2.VideoCapture(url)
-    r, img = cap.read()
-    return img
+config.token
+config.chat_id
 
 def saveImage(img):
-    name =  '{0:010x}'.format(int(time.time() * 256))[:10]
-    path = photos + name + '.png'
+    name =  '{}'.format(int(time.time()))
+    path = config.photos + name + '.png'
     cv2.imwrite(path, img)
     return path
 
@@ -35,6 +27,14 @@ def loadLogin():
     with open(login,  'r', encoding='utf-8') as f:
         loginData = f.read()
         loginDataJson = json.loads(loginData)
+        config.token = loginDataJson["key"]
+        config.chat_id = loginDataJson["chat_id"] 
 
-loadLogin()
+def initEndpoint():
+    loadLogin()
+    tp = "http://api.telegram.org/bot" + config.token + "/setWebHook?url=" + config.endpoint
+    requests.get(tp)
+    print("registered:", tp)
+
+
 

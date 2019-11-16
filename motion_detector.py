@@ -9,8 +9,8 @@ import datetime
 import imutils
 import time
 import cv2
-import mon
-
+import com
+import config
 
 
 def increase_brightness(img, value=30):
@@ -26,7 +26,8 @@ def increase_brightness(img, value=30):
 
     return img
 
-def compare(url):
+def compare():
+    url = config.stream
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
     ap.add_argument("-v", "--video", help="path to the video file")
@@ -93,8 +94,6 @@ def compare(url):
                 # compute the bounding box for the contour, draw it on the frame,
                 # and update the text
 
-                print(cv2.contourArea(c))
-
                 (x, y, w, h) = cv2.boundingRect(c)
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 text = "Occupied"
@@ -102,26 +101,26 @@ def compare(url):
             # draw the text and timestamp on the frame
             cv2.putText(frame, "Room Status: {}".format(text), (10, 20),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-            cv2.putText(frame, datetime.datetime.now().strftime("%A %d %B %Y %I:%M:%S%p"),
-                (10, frame.shape[0] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
-
-            if text == "Occupied":
+            if text == "Occupied" and config.monitor:
                 img = frame
-                location = mon.saveImage(img)
-                mon.notify(location)
+                location = com.saveImage(img)
+                com.notify(location)
+                print(text)
+
 
             key = cv2.waitKey(1) & 0xFF
 
             counter+=1
             if counter % (framerate * delay) == 0:
                 firstFrame = gray
-        except:
+
+        except Exception as e: 
+            print(e)
             # cleanup the camera and close any open windows
-            vs.stop() if args.get("video", None) is None else vs.release()
-            print("error")
-            time.sleep(10)
+            #vs.stop() if args.get("video", None) is None else vs.release()
+            
+            
 
     
 
 
-compare("http://192.168.178.25:8000/stream.mjpg")
