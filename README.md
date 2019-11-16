@@ -8,5 +8,14 @@ It can be enabled/disabled via chat commands ("/start", "/stop")
 - telegram bot
 - tls endpoint
 
+
+#### Start
+- rename img to imgs
+- rename data1.json to data.json
+- insert token + key into data.json
+- change config.py to your requirements
+- pip install -r requirements.txt
+- python app.py
+
 #### Result:
 ![](1.png)
