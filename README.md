@@ -17,5 +17,9 @@ It can be enabled/disabled via chat commands ("/start", "/stop")
 - pip install -r requirements.txt
 - python app.py
 
+#### Docker
+    docker build -t survbot .
+    docker run -d --rm -p 80:5003 survbot
+
 #### Result:
 ![](1.png)
