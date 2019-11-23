@@ -27,29 +27,30 @@ def increase_brightness(img, value=30):
     return img
 
 def compare():
-    url = config.stream
-    # construct the argument parser and parse the arguments
-    ap = argparse.ArgumentParser()
-    ap.add_argument("-v", "--video", help="path to the video file")
-    ap.add_argument("-amin", "--min-area", type=int, default=3000, help="minimum area size")
-    ap.add_argument("-amax", "--max-area", type=int, default=10000, help="minimum area size")
-    args = vars(ap.parse_args())
+    try:
+        url = config.stream
+        # construct the argument parser and parse the arguments
+        ap = argparse.ArgumentParser()
+        ap.add_argument("-v", "--video", help="path to the video file")
+        ap.add_argument("-amin", "--min-area", type=int, default=3000, help="minimum area size")
+        ap.add_argument("-amax", "--max-area", type=int, default=10000, help="minimum area size")
+        args = vars(ap.parse_args())
 
-    # if the video argument is None, then we are reading from webcam
-    args["video"] = url
-    #args["video"] = "./videos/example_02.mp4"
-    vs = cv2.VideoCapture(args["video"])
-    counter = 0
-    threashold = 18
-    delay = .3
-    framerate = 30
+        # if the video argument is None, then we are reading from webcam
+        args["video"] = url
+        #args["video"] = "./videos/example_02.mp4"
+        vs = cv2.VideoCapture(args["video"])
+        counter = 0
+        threashold = 18
+        delay = .3
+        framerate = 30
 
-    # initialize the first frame in the video stream
-    firstFrame = None
+        # initialize the first frame in the video stream
+        firstFrame = None
 
-    # loop over the frames of the video
-    while True:
-        try:
+        # loop over the frames of the video
+        while True:
+            print(counter)
             # grab the current frame and initialize the occupied/unoccupied
             # text
             frame = vs.read()
@@ -59,7 +60,7 @@ def compare():
             # if the frame could not be grabbed, then we have reached the end
             # of the video
             if frame is None:
-                break
+                retry("frame was none")
 
             # resize the frame, convert it to grayscale, and blur it
             frame = imutils.resize(frame, width=500)
@@ -107,20 +108,16 @@ def compare():
                 com.notify(location)
                 print(text)
 
-
-            key = cv2.waitKey(1) & 0xFF
-
             counter+=1
             if counter % (framerate * delay) == 0:
                 firstFrame = gray
 
-        except Exception as e: 
-            print(e)
-            # cleanup the camera and close any open windows
-            #vs.stop() if args.get("video", None) is None else vs.release()
-            
-            
-
-    
-
-
+    except Exception as e: 
+        retry(e)
+        # cleanup the camera and close any open windows
+        vs.stop() if args.get("video", None) is None else vs.release()
+        
+def retry(error):
+    print(error)
+    time.sleep(10)
+    compare()
