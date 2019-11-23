@@ -50,7 +50,7 @@ def compare():
 
         # loop over the frames of the video
         while True:
-            print(counter)
+           
             # grab the current frame and initialize the occupied/unoccupied
             # text
             frame = vs.read()
