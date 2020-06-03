@@ -41,9 +41,6 @@ def compare():
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (31, 31), 0)
 
-            cv2.imshow("frame", frame)
-            cv2.imshow("gray", gray)
-
             # if the first frame is None, initialize it
             if firstFrame is None:
                 firstFrame = gray
