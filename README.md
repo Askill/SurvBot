@@ -6,20 +6,28 @@ It can be enabled/disabled via chat commands ("/start", "/stop")
 - video feed
 - server 
 - telegram bot
-- tls endpoint
+- tls endpoint (optional)
 
-
-#### Start
-- rename img to imgs
-- rename data1.json to data.json
-- insert token + key into data.json
+#### Quick Start
+- insert bot-token + chat-key into config.py
 - change config.py to your requirements
 - pip install -r requirements.txt
 - python app.py
 
-#### Docker
+#### Docker Deployment
     docker build -t survbot .
     docker run -d --rm -p 80:5003 survbot
 
 #### Result:
-![](1.png)
+![](images/1.png)
+
+
+#### How it works
+
+The image is scaled down and blured, then the difference to an earlier frame is calculated.  
+The resulting frame is binarized. Then all contours are marked if they contain a number of changed pixels between the upper and lower bound specified in config.py.  
+
+Those contours are then marked in the original image, which is then saved in the filesystem and sent to the specified telegram bot. 
+
+
+![](images/2.png)

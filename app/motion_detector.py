@@ -9,17 +9,19 @@ import config
 import traceback
 import _thread
 
+
+
 def compare():
     try:
         url = config.stream
 
-        min_area = 3000
-        max_area = 10000
+        min_area = config.min_area
+        max_area = config.max_area
         
         counter = 0
-        threashold = 18
-        delay = .3
-        framerate = 30
+        threashold = config.threashold
+        delay = config.delay
+        framerate = config.framerate
         
         # initialize the first frame in the video stream
         vs = cv2.VideoCapture(url)
@@ -38,6 +40,9 @@ def compare():
             frame = imutils.resize(frame, width=500)
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             gray = cv2.GaussianBlur(gray, (31, 31), 0)
+
+            cv2.imshow("frame", frame)
+            cv2.imshow("gray", gray)
 
             # if the first frame is None, initialize it
             if firstFrame is None:
@@ -69,8 +74,8 @@ def compare():
                 img = frame
                 location = com.saveImage(img)
                 _thread.start_new_thread(com.notify, (location, ) )
-                #com.notify(location)
 
+            # get new image to compare to every so often to avoid changes over time ie. sun
             counter+=1
             if counter % (framerate * delay) == 0:
                 firstFrame = gray
